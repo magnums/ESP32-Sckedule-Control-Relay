@@ -118,6 +118,8 @@ void setup() {
 
 // WiFiManager for dynamic WiFi configuration
   WiFiManager wifiManager;
+    //wifiManager.resetSettings(); // Use for testing purposes to clear saved settings
+  wifiManager.setConnectTimeout(30); // Set the timeout to 30 seconds
   // Attempts to connect to last known settings
   if(!wifiManager.autoConnect("AutoConnectAP")) {
     Serial.println("Failed to connect and hit timeout");
