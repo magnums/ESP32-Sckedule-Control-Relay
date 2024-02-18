@@ -12,10 +12,6 @@ bool is_authenticated = false; // Global variable to track authentication status
 
 const int relayPin = 26;
 
-// WiFi credentials
-const char* ssid = "YourWiFiSSID";
-const char* password = "YourWiFiPassword";
-
 WebServer server(80);
 
 // Structure to store schedule times
@@ -120,20 +116,18 @@ void setup() {
   // Initialize EEPROM with size enough for the schedule
   EEPROM.begin(sizeof(schedule));
 
-// Connect to WiFi network
-    Serial.print("Connecting to ");
-    Serial.println(ssid);
-    WiFi.begin(ssid, password);
+// WiFiManager for dynamic WiFi configuration
+  WiFiManager wifiManager;
+  // Attempts to connect to last known settings
+  if(!wifiManager.autoConnect("AutoConnectAP")) {
+    Serial.println("Failed to connect and hit timeout");
+    // Reset and try again, or maybe put it to deep sleep
+    ESP.restart();
+  }
 
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(1000);
-        Serial.println("Connecting to WiFi...");
-    }
-
-    // Print IP address if successfully connected
-    Serial.println("Connected to WiFi!");
-    Serial.print("IP Address: ");
-    Serial.println(WiFi.localIP());
+  Serial.println("Connected to WiFi!");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
 
   setupTime(); // Set up time synchronization
   loadSchedule(); // Load schedule from EEPROM
